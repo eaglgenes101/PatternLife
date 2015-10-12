@@ -178,7 +178,7 @@ public class MyGdxGame implements ApplicationListener
 		currentPatterns = new LinkedList<PatternInstance>();
 		knownPatterns = new ReferenceMap<>(
 				AbstractReferenceMap.ReferenceStrength.HARD,
-				AbstractReferenceMap.ReferenceStrength.HARD);
+				AbstractReferenceMap.ReferenceStrength.SOFT);
 		currentPatterns.add(new PatternInstance(200, -200, GLIDERS_X_THE_DOZEN,
 				knownPatterns));
 		batch = new SpriteBatch();
@@ -224,7 +224,7 @@ public class MyGdxGame implements ApplicationListener
 
 		System.out.println(knownPatterns.size()); 
 		
-		// System.gc();
+		//System.gc();
 
 	}
 
