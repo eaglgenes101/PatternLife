@@ -42,6 +42,11 @@ public class PatternEntry
 		nextPatterns = null; //We haven't found this yet, but we will in good time
 	}
 	
+	public int hashCode()
+	{
+		return cells.hashCode();
+	}
+	
 	public boolean equals(Object other)
 	{
 

@@ -32,6 +32,11 @@ public class PatternInstance
 	int x;
 
 	int y;
+	
+	public int hashCode()
+	{
+		return basedOn.hashCode()^x^y;
+	}
 
 	public PatternInstance(int startX, int startY, PatternEntry startBase)
 	{

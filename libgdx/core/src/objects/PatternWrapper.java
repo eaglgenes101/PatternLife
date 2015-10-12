@@ -1,6 +1,7 @@
 package objects;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /*
 PatternLife boolean array wrappers
@@ -31,6 +32,24 @@ public class PatternWrapper
 	public PatternWrapper(boolean[][] startPattern)
 	{
 		pattern = startPattern.clone();
+	}
+	
+	public int HashCode()
+	{
+		//Variation on the Zobrist hash. 
+		//Yes, I'm lazy. So is everyone else. 
+		Random r = new Random(65536*getW()+getH());
+		int returnInt = 0;
+		for (int x = 0; x < getW(); x++)
+		{
+			for (int y = 0; y < getH(); y++)
+			{
+				int n = r.nextInt();
+				if (pattern[x][y])
+					returnInt = returnInt ^ n;
+			}
+		}
+		return returnInt;
 	}
 	
 	public boolean equals(Object other)
