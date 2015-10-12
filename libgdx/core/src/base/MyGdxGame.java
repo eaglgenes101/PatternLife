@@ -222,9 +222,8 @@ public class MyGdxGame implements ApplicationListener
 		currentPatterns = Engine.cleanList(Engine.massMerge(collisionList,
 				newList, knownPatterns));
 
-		//System.out.println(knownPatterns.size()); // Why does this change the
-		// output? I have no idea
-		// either!
+		System.out.println(knownPatterns.size()); 
+		
 		// System.gc();
 
 	}

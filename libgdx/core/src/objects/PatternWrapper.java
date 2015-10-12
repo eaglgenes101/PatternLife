@@ -34,7 +34,7 @@ public class PatternWrapper
 		pattern = startPattern.clone();
 	}
 	
-	public int HashCode()
+	public int hashCode()
 	{
 		//Variation on the Zobrist hash. 
 		//Yes, I'm lazy. So is everyone else. 
@@ -52,16 +52,16 @@ public class PatternWrapper
 		return returnInt;
 	}
 	
-	public boolean equals(Object other)
-	{
-		if (other instanceof PatternWrapper)
-			return equals((PatternWrapper)other);
-		return false;
-	}
-	
 	public boolean equals(PatternWrapper other)
 	{
 		return Arrays.deepEquals(this.pattern, other.pattern);
+	}
+	
+	public boolean equals(Object other)
+	{
+		if (other instanceof PatternWrapper)
+			return this.equals((PatternWrapper)other);
+		return false;
 	}
 	
 	public int getW()

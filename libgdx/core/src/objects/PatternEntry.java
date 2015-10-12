@@ -47,25 +47,25 @@ public class PatternEntry
 		return cells.hashCode();
 	}
 	
-	public boolean equals(Object other)
-	{
-
-		if (other instanceof PatternEntry)	
-			return this.equals((PatternEntry)other);
-		return false;
-	}
-	
 	public boolean equals(PatternEntry p)
 	{
-		EntryComparator e = new EntryComparator();
-		return e.compare(this, p) == 0;
+		return this.cells.equals(p.getWrapper());
+	}
+	
+	public boolean equals(Object other)
+	{
+		if (other instanceof PatternEntry)
+			return this.equals((PatternEntry)other);
+		return false; 
 	}
 	
 	//We've trimmed already, see if we can get an entry!
 	public PatternEntry tryEnter (ReferenceMap<PatternWrapper, PatternEntry> lookUpMap)
 	{
 		if (lookUpMap.containsKey(cells))
+		{
 			return lookUpMap.get(cells);
+		}
 		lookUpMap.put(cells, this);
 		return this;
 	}

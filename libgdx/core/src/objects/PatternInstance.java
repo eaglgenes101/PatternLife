@@ -100,7 +100,7 @@ public class PatternInstance
 		for (int i = 0; i < parts.length; i++)
 		{
 			int[] offsets = parts[i].trim();
-			returnArray[i] = new PatternInstance(x+offsets[0], y+offsets[1], parts[i]);
+			returnArray[i] = new PatternInstance(x+offsets[0], y+offsets[1], parts[i].getCells(), lookUpMap);
 		}
 		return returnArray;
 	}

@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.commons.collections4.map.ReferenceMap;
@@ -219,9 +218,9 @@ public class Engine
 		{
 			if (p1 == null && p2 == null)
 				return 0;
-			else if (p1 == null && p2 != null)
+			else if (p1 == null)
 				return 1;
-			else if (p1 != null && p2 == null)
+			else if (p2 == null)
 				return -1;
 			else if (p1.getWrapper().getW() != p2.getWrapper().getW())
 				return p1.getWrapper().getW() - p2.getWrapper().getW();
