@@ -92,8 +92,8 @@ public class PatternEntry
 		while (!knownPoints.isEmpty())
 		{
 			int[] pt = knownPoints.poll();
-			for (int dx = -2; dx < 3; dx++)
-				for (int dy = -2; dy < 3; dy++)
+			for (int dx = -3; dx < 4; dx++)
+				for (int dy = -3; dy < 4; dy++)
 				{
 					int[] thispt = {pt[0]+dx, pt[1]+dy};
 					if (isActive(cells.pattern, thispt[0], thispt[1]) && !isActive(isPart, thispt[0], thispt[1]))

@@ -179,7 +179,7 @@ public class MyGdxGame implements ApplicationListener
 		knownPatterns = new ReferenceMap<>(
 				AbstractReferenceMap.ReferenceStrength.HARD,
 				AbstractReferenceMap.ReferenceStrength.HARD);
-		currentPatterns.add(new PatternInstance(200, -200, PENTADECATHON_GRANDPARENT,
+		currentPatterns.add(new PatternInstance(200, -200, GLIDERS_X_THE_DOZEN,
 				knownPatterns));
 		batch = new SpriteBatch();
 	}
