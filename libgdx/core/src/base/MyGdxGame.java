@@ -222,7 +222,7 @@ public class MyGdxGame implements ApplicationListener
 		currentPatterns = Engine.cleanList(Engine.massMerge(collisionList,
 				newList, knownPatterns));
 
-		System.out.println(Runtime.getRuntime().freeMemory()); 
+		//System.out.println(Runtime.getRuntime().freeMemory()); 
 		
 		//System.gc();
 
