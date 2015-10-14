@@ -25,13 +25,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 //Because some idiot at Oracle decided that it was fine for the equals method for arrays to be worthless... 
 public class PatternWrapper
 {
-	public static boolean[][] NO_PATTERN = {};
-	
 	public boolean[][] pattern;
 	
 	public PatternWrapper(boolean[][] startPattern)
 	{
 		pattern = startPattern.clone();
+	}
+	
+	public PatternWrapper(PatternWrapper pw)
+	{
+		pattern = pw.pattern.clone();
 	}
 	
 	public int hashCode()

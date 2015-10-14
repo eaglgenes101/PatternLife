@@ -11,6 +11,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import objects.PatternEntry;
 import objects.PatternInstance;
 import objects.PatternWrapper;
+import rules.ConwayLifeRule;
+import rules.Ruleset;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -48,102 +50,8 @@ public class MyGdxGame implements ApplicationListener
 	Stage stage;
 
 	SpriteBatch batch;
-
-	private static class conwayLifeRule implements
-			Function<boolean[][], Boolean>
-	{
-		public Boolean apply(boolean[][] t)
-		{
-			int counter = 0;
-			if (t[0][0])
-				counter++;
-			if (t[0][1])
-				counter++;
-			if (t[0][2])
-				counter++;
-			if (t[1][2])
-				counter++;
-			if (t[2][2])
-				counter++;
-			if (t[2][1])
-				counter++;
-			if (t[2][0])
-				counter++;
-			if (t[1][0])
-				counter++;
-
-			if (counter == 2 && t[1][1])
-				return true;
-			if (counter == 3)
-				return true;
-			return false;
-
-		}
-	};
-
-	private static class highLifeRule implements Function<boolean[][], Boolean>
-	{
-		public Boolean apply(boolean[][] t)
-		{
-			int counter = 0;
-			if (t[0][0])
-				counter++;
-			if (t[0][1])
-				counter++;
-			if (t[0][2])
-				counter++;
-			if (t[1][2])
-				counter++;
-			if (t[2][2])
-				counter++;
-			if (t[2][1])
-				counter++;
-			if (t[2][0])
-				counter++;
-			if (t[1][0])
-				counter++;
-
-			if (counter == 2 && t[1][1])
-				return true;
-			if (counter == 3)
-				return true;
-			if (counter == 6 && !t[1][1])
-				return true;
-			return false;
-
-		}
-	};
-
-	private static class moveRule implements Function<boolean[][], Boolean>
-	{
-		public Boolean apply(boolean[][] t)
-		{
-			int counter = 0;
-			if (t[0][0])
-				counter++;
-			if (t[0][1])
-				counter++;
-			if (t[0][2])
-				counter++;
-			if (t[1][2])
-				counter++;
-			if (t[2][2])
-				counter++;
-			if (t[2][1])
-				counter++;
-			if (t[2][0])
-				counter++;
-			if (t[1][0])
-				counter++;
-
-			if ((counter == 2 || counter == 4 || counter == 5) && t[1][1])
-				return true;
-			if ((counter == 3 || counter == 6 || counter == 8) && !t[1][1])
-				return true;
-			return false;
-
-		}
-	};
+	
+	int genCounter;
 
 	boolean[][] GOSPER_GLIDER_CELLS = { {true, false, true},
 			{false, true, true}, {false, true, false}};
@@ -171,6 +79,8 @@ public class MyGdxGame implements ApplicationListener
 			{true, false, false, false, true}, {true, false, false, true, true}};
 
 	boolean[][] EMPTY_PATTERN = {};
+	
+	Ruleset actingRule = new ConwayLifeRule();
 
 	@Override
 	public void create()
@@ -182,6 +92,7 @@ public class MyGdxGame implements ApplicationListener
 		currentPatterns.add(new PatternInstance(600, -100, BLOCK_LAYING_SWITCH_ENGINE,
 				knownPatterns));
 		batch = new SpriteBatch();
+		genCounter = 0;
 	}
 
 	@Override
@@ -202,7 +113,7 @@ public class MyGdxGame implements ApplicationListener
 		{
 			PatternInstance currentPatternInstance = iter.next();
 			PatternInstance[] successors = currentPatternInstance.step(
-					new conwayLifeRule(), knownPatterns);
+					actingRule, knownPatterns);
 			for (PatternInstance i : successors)
 				newList.add(i);
 
@@ -220,9 +131,10 @@ public class MyGdxGame implements ApplicationListener
 		TreeSet<Pair<PatternInstance, PatternInstance>> collisionList = Engine
 				.findCollisions(newList, 5);
 		currentPatterns = Engine.cleanList(Engine.massMerge(collisionList,
-				newList, knownPatterns));
-
-		//System.out.println(Runtime.getRuntime().freeMemory()); 
+				newList, knownPatterns, actingRule));
+		
+		genCounter++;
+		System.out.println(genCounter);
 		
 		//System.gc();
 

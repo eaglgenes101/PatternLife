@@ -13,6 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import objects.PatternEntry;
 import objects.PatternInstance;
 import objects.PatternWrapper;
+import rules.Ruleset;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -246,7 +247,8 @@ public class Engine
 	static LinkedList<PatternInstance> massMerge(
 			TreeSet<Pair<PatternInstance, PatternInstance>> collisions,
 			LinkedList<PatternInstance> instances,
-			ReferenceMap<PatternWrapper, PatternEntry> knownPatterns)
+			ReferenceMap<PatternWrapper, PatternEntry> knownPatterns,
+			Ruleset rule)
 	{
 		TreeSet<TreeSet<PatternInstance>> mergeGroups = new TreeSet<>(
 				new TreeComparator());
@@ -328,7 +330,7 @@ public class Engine
 			{
 				seed = seed.merge(knownPatterns, pattern);
 			}
-			PatternInstance[] parts = seed.segment(knownPatterns);
+			PatternInstance[] parts = seed.segment(knownPatterns, rule);
 			for (PatternInstance part : parts)
 			{
 				instances.add(part);
@@ -337,5 +339,14 @@ public class Engine
 
 		return instances;
 
+	}
+	
+	public static boolean isActive(boolean[][] array, int xCoord, int yCoord)
+	{
+		if (xCoord < 0 || xCoord >= array.length)
+			return false;
+		if (yCoord < 0 || yCoord >= array[0].length)
+			return false;
+		return array[xCoord][yCoord];
 	}
 }
