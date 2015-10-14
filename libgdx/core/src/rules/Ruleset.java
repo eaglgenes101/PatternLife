@@ -6,5 +6,5 @@ import objects.PatternWrapper;
 
 public abstract class Ruleset implements Function<PatternWrapper, boolean[][]>
 {
-	public int[][] neighborField;
+	public abstract int[][] getNeighborField();
 }

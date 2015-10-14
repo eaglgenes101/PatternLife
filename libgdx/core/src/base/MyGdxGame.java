@@ -3,7 +3,6 @@ package base;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.TreeSet;
-import java.util.function.Function;
 
 import org.apache.commons.collections4.map.*;
 import org.apache.commons.lang3.tuple.Pair;
@@ -89,7 +88,7 @@ public class MyGdxGame implements ApplicationListener
 		knownPatterns = new ReferenceMap<>(
 				AbstractReferenceMap.ReferenceStrength.SOFT,
 				AbstractReferenceMap.ReferenceStrength.SOFT);
-		currentPatterns.add(new PatternInstance(600, -100, BLOCK_LAYING_SWITCH_ENGINE,
+		currentPatterns.add(new PatternInstance(400, -300, R_PENTOMINO,
 				knownPatterns));
 		batch = new SpriteBatch();
 		genCounter = 0;
@@ -134,7 +133,7 @@ public class MyGdxGame implements ApplicationListener
 				newList, knownPatterns, actingRule));
 		
 		genCounter++;
-		System.out.println(genCounter);
+		System.out.println(currentPatterns.size());
 		
 		//System.gc();
 

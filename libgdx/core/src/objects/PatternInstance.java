@@ -1,7 +1,5 @@
 package objects;
 
-import java.util.function.Function;
-
 import org.apache.commons.collections4.map.ReferenceMap;
 
 import rules.Ruleset;

@@ -2,14 +2,12 @@ package objects;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.function.Function;
 
 import org.apache.commons.lang3.*;
 import org.apache.commons.collections4.map.*;
 
 import rules.Ruleset;
 import base.Engine;
-import base.Engine.EntryComparator;
 
 /*
  PatternLife pattern entries
@@ -44,8 +42,7 @@ public class PatternEntry
 	public PatternEntry(boolean[][] cellPattern)
 	{
 		cells = new PatternWrapper(cellPattern);
-		nextPatterns = null; // We haven't found this yet, but we will in good
-								// time
+		nextPatterns = null; 
 	}
 
 	public int hashCode()
@@ -104,7 +101,7 @@ public class PatternEntry
 		while (!knownPoints.isEmpty())
 		{
 			int[] pt = knownPoints.poll();
-			for (int[] dP : rule.neighborField)
+			for (int[] dP : rule.getNeighborField())
 			{
 				int[] thispt = {pt[0] + dP[0], pt[1] + dP[1]};
 				if (Engine.isActive(cells.pattern, thispt[0], thispt[1])
@@ -119,10 +116,7 @@ public class PatternEntry
 		boolean canSplit = false;
 		for (int x = 0; x < cells.getW(); x++)
 			for (int y = 0; y < cells.getH(); y++)
-				if (cells.pattern[x][y] && !isPart[x][y]) // There are active
-															// cells not covered
-															// by this
-															// segmentation
+				if (cells.pattern[x][y] && !isPart[x][y])
 					canSplit = true;
 
 		if (canSplit)
@@ -162,15 +156,9 @@ public class PatternEntry
 		for (int i = 0; i < nextPatterns.length; i++)
 		{
 			int[] gottenOffsets = nextPatterns[i].trim();
-			nextXOffsets[i] = gottenOffsets[0] - 1; // I wouldn't be surprised
-													// if an off-by-1 error
-													// emerged here
+			nextXOffsets[i] = gottenOffsets[0] - 1;
 			nextYOffsets[i] = gottenOffsets[1] - 1;
-			nextPatterns[i] = nextPatterns[i].tryEnter(lookUpMap); // It's
-																	// trimmed,
-																	// let's
-																	// enter it
-																	// now!
+			nextPatterns[i] = nextPatterns[i].tryEnter(lookUpMap);
 		}
 		return;
 
