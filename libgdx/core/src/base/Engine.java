@@ -1,5 +1,6 @@
 package base;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import objects.PatternEntry;
 import objects.PatternInstance;
 import objects.PatternWrapper;
+import rules.Ruleset;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -20,30 +22,31 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
 /*
-PatternLife utility methods
-Copyright (C) 2015 Eugene "eaglgenes101" Wang
+ PatternLife utility methods
+ Copyright (C) 2015 Eugene "eaglgenes101" Wang
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 public class Engine
 {
 
-	public static boolean[][] EMPTY_PATTERN = {};
+	public static final boolean[][] EMPTY_PATTERN = {};
 
-	static PatternEntry nullPattern = new PatternEntry(EMPTY_PATTERN);
+	public static final PatternEntry nullPattern = new PatternEntry(
+			EMPTY_PATTERN);
 
 	public static LinkedList<PatternInstance> cleanList(
 			LinkedList<PatternInstance> toClean)
@@ -164,7 +167,8 @@ public class Engine
 
 	}
 
-	static class TreeComparator implements Comparator<TreeSet<PatternInstance>>
+	static class TreeComparator implements
+			Comparator<TreeSet<PatternInstance>>, Serializable
 	{
 		public int compare(TreeSet<PatternInstance> t1,
 				TreeSet<PatternInstance> t2)
@@ -176,7 +180,8 @@ public class Engine
 		}
 	}
 
-	static class InstanceComparator implements Comparator<PatternInstance>
+	static class InstanceComparator implements Comparator<PatternInstance>,
+			Serializable
 	{
 		public int compare(PatternInstance p1, PatternInstance p2)
 		{
@@ -198,7 +203,7 @@ public class Engine
 	}
 
 	static class PairComparator implements
-			Comparator<Pair<PatternInstance, PatternInstance>>
+			Comparator<Pair<PatternInstance, PatternInstance>>, Serializable
 	{
 		public int compare(Pair<PatternInstance, PatternInstance> p1,
 				Pair<PatternInstance, PatternInstance> p2)
@@ -212,7 +217,8 @@ public class Engine
 		}
 	}
 
-	static public class EntryComparator implements Comparator<PatternEntry>
+	static public class EntryComparator implements Comparator<PatternEntry>,
+			Serializable
 	{
 		public int compare(PatternEntry p1, PatternEntry p2)
 		{
@@ -246,7 +252,8 @@ public class Engine
 	static LinkedList<PatternInstance> massMerge(
 			TreeSet<Pair<PatternInstance, PatternInstance>> collisions,
 			LinkedList<PatternInstance> instances,
-			ReferenceMap<PatternWrapper, PatternEntry> knownPatterns)
+			ReferenceMap<PatternWrapper, PatternEntry> knownPatterns,
+			Ruleset rule)
 	{
 		TreeSet<TreeSet<PatternInstance>> mergeGroups = new TreeSet<>(
 				new TreeComparator());
@@ -328,7 +335,7 @@ public class Engine
 			{
 				seed = seed.merge(knownPatterns, pattern);
 			}
-			PatternInstance[] parts = seed.segment(knownPatterns);
+			PatternInstance[] parts = seed.segment(knownPatterns, rule);
 			for (PatternInstance part : parts)
 			{
 				instances.add(part);
@@ -337,5 +344,14 @@ public class Engine
 
 		return instances;
 
+	}
+
+	public static boolean isActive(boolean[][] array, int xCoord, int yCoord)
+	{
+		if (xCoord < 0 || xCoord >= array.length)
+			return false;
+		if (yCoord < 0 || yCoord >= array[0].length)
+			return false;
+		return array[xCoord][yCoord];
 	}
 }

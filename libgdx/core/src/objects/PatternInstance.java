@@ -1,8 +1,8 @@
 package objects;
 
-import java.util.function.Function;
-
 import org.apache.commons.collections4.map.ReferenceMap;
+
+import rules.Ruleset;
 
 import com.badlogic.gdx.math.Rectangle;
 
@@ -57,7 +57,7 @@ public class PatternInstance
 
 	// Returns next generation if it doesn't split, multiple new instantiations
 	// if it does
-	public PatternInstance[] step(Function<boolean[][], Boolean> ruleset,
+	public PatternInstance[] step(Ruleset ruleset,
 			ReferenceMap<PatternWrapper, PatternEntry> lookUpMap)
 	{
 		PatternEntry[] newBase = basedOn.findNext(ruleset, lookUpMap);
@@ -93,9 +93,9 @@ public class PatternInstance
 				basedOn.cells.getH() + 2);
 	}
 	
-	public PatternInstance[] segment(ReferenceMap<PatternWrapper, PatternEntry> lookUpMap)
+	public PatternInstance[] segment(ReferenceMap<PatternWrapper, PatternEntry> lookUpMap, Ruleset rule)
 	{
-		PatternEntry[] parts = basedOn.segment();
+		PatternEntry[] parts = basedOn.segment(rule);
 		PatternInstance[] returnArray = new PatternInstance[parts.length];
 		for (int i = 0; i < parts.length; i++)
 		{
