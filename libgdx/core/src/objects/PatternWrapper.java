@@ -25,9 +25,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 //Because some idiot at Oracle decided that it was fine for the equals method for arrays to be worthless... 
 public class PatternWrapper
 {
-	public boolean[][] pattern;
+	public byte[][] pattern;
 	
-	public PatternWrapper(boolean[][] startPattern)
+	public PatternWrapper(byte[][] startPattern)
 	{
 		pattern = startPattern.clone();
 	}
@@ -40,16 +40,45 @@ public class PatternWrapper
 	public int hashCode()
 	{
 		//Variation on the Zobrist hash. 
-		//Yes, I'm lazy. So is everyone else. 
-		Random r = new Random(65536*getW()+getH());
+		//Yes, I'm lazy. So is everyone else.
+		long currentSeed = 65536*getW()+getH();
+		Random r1 = new Random(currentSeed+0);
+		Random r2 = new Random(currentSeed+1);
+		Random r3 = new Random(currentSeed+2);
+		Random r4 = new Random(currentSeed+3);
+		Random r5 = new Random(currentSeed+4);
+		Random r6 = new Random(currentSeed+5);
+		Random r7 = new Random(currentSeed+6);
+		Random r8 = new Random(currentSeed+7);
 		int returnInt = 0;
 		for (int x = 0; x < getW(); x++)
 		{
 			for (int y = 0; y < getH(); y++)
 			{
-				int n = r.nextInt();
-				if (pattern[x][y])
-					returnInt = returnInt ^ n;
+				int n1 = r1.nextInt();
+				int n2 = r2.nextInt();
+				int n3 = r3.nextInt();
+				int n4 = r4.nextInt();
+				int n5 = r5.nextInt();
+				int n6 = r6.nextInt();
+				int n7 = r7.nextInt();
+				int n8 = r8.nextInt();
+				if ((pattern[x][y]&1)!= 0)
+					returnInt = returnInt ^ n1;
+				if ((pattern[x][y]&2)!= 0)
+					returnInt = returnInt ^ n2;
+				if ((pattern[x][y]&4)!= 0)
+					returnInt = returnInt ^ n3;
+				if ((pattern[x][y]&8)!= 0)
+					returnInt = returnInt ^ n4;
+				if ((pattern[x][y]&16)!= 0)
+					returnInt = returnInt ^ n5;
+				if ((pattern[x][y]&32)!= 0)
+					returnInt = returnInt ^ n6;
+				if ((pattern[x][y]&64)!= 0)
+					returnInt = returnInt ^ n7;
+				if ((pattern[x][y]&128)!= 0)
+					returnInt = returnInt ^ n8;
 			}
 		}
 		return returnInt;

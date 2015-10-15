@@ -39,7 +39,7 @@ public class PatternEntry
 
 	int[] nextYOffsets;
 
-	public PatternEntry(boolean[][] cellPattern)
+	public PatternEntry(byte[][] cellPattern)
 	{
 		cells = new PatternWrapper(cellPattern);
 		nextPatterns = null; 
@@ -87,7 +87,7 @@ public class PatternEntry
 		int startY = 0;
 		for (int x = 0; x < cells.getW(); x++)
 			for (int y = 0; y < cells.getH(); y++)
-				if (cells.pattern[x][y])
+				if (cells.pattern[x][y] != 0)
 				{
 					startX = x;
 					startY = y;
@@ -104,7 +104,7 @@ public class PatternEntry
 			for (int[] dP : rule.getNeighborField())
 			{
 				int[] thispt = {pt[0] + dP[0], pt[1] + dP[1]};
-				if (Engine.isActive(cells.pattern, thispt[0], thispt[1])
+				if (Engine.getByte(cells.pattern, thispt[0], thispt[1])!= 0
 						&& !Engine.isActive(isPart, thispt[0], thispt[1]))
 				{
 					knownPoints.add(thispt);
@@ -116,20 +116,20 @@ public class PatternEntry
 		boolean canSplit = false;
 		for (int x = 0; x < cells.getW(); x++)
 			for (int y = 0; y < cells.getH(); y++)
-				if (cells.pattern[x][y] && !isPart[x][y])
+				if (cells.pattern[x][y]!=0 && !isPart[x][y])
 					canSplit = true;
 
 		if (canSplit)
 		{
-			boolean[][] cellsOne = new boolean[cells.getW()][cells.getH()];
-			boolean[][] cellsTwo = new boolean[cells.getW()][cells.getH()];
+			byte[][] cellsOne = new byte[cells.getW()][cells.getH()];
+			byte[][] cellsTwo = new byte[cells.getW()][cells.getH()];
 			for (int x = 0; x < cells.getW(); x++)
 				for (int y = 0; y < cells.getH(); y++)
 				{
-					if (cells.pattern[x][y] && isPart[x][y])
-						cellsOne[x][y] = true;
-					if (cells.pattern[x][y] && !isPart[x][y])
-						cellsTwo[x][y] = true;
+					if (cells.pattern[x][y]!=0 && isPart[x][y])
+						cellsOne[x][y] = cells.pattern[x][y];
+					if (cells.pattern[x][y]!=0 && !isPart[x][y])
+						cellsTwo[x][y] = cells.pattern[x][y];
 				}
 			PatternEntry componentPatternOne = new PatternEntry(cellsOne);
 			PatternEntry[] getOtherParts = new PatternEntry(cellsTwo).segment(rule);
@@ -146,7 +146,7 @@ public class PatternEntry
 	private void obtainNext(Ruleset ruleset,
 			ReferenceMap<PatternWrapper, PatternEntry> lookUpMap)
 	{
-		boolean[][] nextCells = ruleset.apply(getWrapper());
+		byte[][] nextCells = ruleset.apply(getWrapper());
 
 		// Run it through processing for cleanup
 		PatternEntry candidatePattern = new PatternEntry(nextCells);
@@ -184,7 +184,7 @@ public class PatternEntry
 		return nextYOffsets;
 	}
 
-	public boolean[][] getCells()
+	public byte[][] getCells()
 	{
 		return cells.pattern.clone();
 	}
@@ -212,7 +212,7 @@ public class PatternEntry
 		while (canBottomTrim && bottomTrim < cells.getH())
 		{
 			for (int x = 0; x < cells.getW(); x++)
-				if (cells.pattern[x][bottomTrim])
+				if (cells.pattern[x][bottomTrim] != 0)
 					canBottomTrim = false;
 			if (canBottomTrim)
 				bottomTrim++;
@@ -221,7 +221,7 @@ public class PatternEntry
 		while (canTopTrim && bottomTrim + topTrim < cells.getH())
 		{
 			for (int x = 0; x < cells.getW(); x++)
-				if (cells.pattern[x][cells.getH() - 1 - topTrim])
+				if (cells.pattern[x][cells.getH() - 1 - topTrim] != 0)
 					canTopTrim = false;
 			if (canTopTrim)
 				topTrim++;
@@ -230,7 +230,7 @@ public class PatternEntry
 		while (canLeftTrim && leftTrim < cells.getW())
 		{
 			for (int y = 0; y < cells.getH(); y++)
-				if (cells.pattern[leftTrim][y])
+				if (cells.pattern[leftTrim][y] != 0)
 					canLeftTrim = false;
 			if (canLeftTrim)
 				leftTrim++;
@@ -239,7 +239,7 @@ public class PatternEntry
 		while (canRightTrim && leftTrim + rightTrim < cells.getW())
 		{
 			for (int y = 0; y < cells.getH(); y++)
-				if (cells.pattern[cells.getW() - 1 - rightTrim][y])
+				if (cells.pattern[cells.getW() - 1 - rightTrim][y] != 0)
 					canRightTrim = false;
 			if (canRightTrim)
 				rightTrim++;
@@ -247,7 +247,7 @@ public class PatternEntry
 
 		if (!(bottomTrim == 0 && topTrim == 0 && leftTrim == 0 && rightTrim == 0))
 		{
-			boolean[][] newCell = new boolean[cells.getW() - leftTrim
+			byte[][] newCell = new byte[cells.getW() - leftTrim
 					- rightTrim][cells.getH() - bottomTrim - topTrim];
 			for (int x = leftTrim; x < cells.getW() - rightTrim; x++)
 				for (int y = bottomTrim; y < cells.getH() - topTrim; y++)

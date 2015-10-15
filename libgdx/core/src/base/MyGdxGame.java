@@ -52,32 +52,32 @@ public class MyGdxGame implements ApplicationListener
 	
 	int genCounter;
 
-	boolean[][] GOSPER_GLIDER_CELLS = { {true, false, true},
-			{false, true, true}, {false, true, false}};
+	byte[][] GOSPER_GLIDER_CELLS = { {1, 0, 1},
+			{0, 1, 1}, {0, 1, 0}};
 
-	boolean[][] R_PENTOMINO = { {false, true, true}, {true, true, false},
-			{false, true, false}};
+	byte[][] R_PENTOMINO = { {0, 1, 1}, {1, 1, 0},
+			{0, 1, 0}};
 
-	boolean[][] PENTADECATHON_GRANDPARENT = { {true}, {true}, {true}, {true},
-			{true}, {true}, {true}, {true}, {true}, {true}};
+	byte[][] PENTADECATHON_GRANDPARENT = { {1}, {1}, {1}, {1},
+			{1}, {1}, {1}, {1}, {1}, {1}};
 
-	boolean[][] MOVE_PUFFER = { {true, false}, {false, true}, {false, true},
-			{false, true}, {false, true}, {true, false}};
+	byte[][] MOVE_PUFFER = { {1, 0}, {0, 1}, {0, 1},
+			{0, 1}, {0, 1}, {1, 0}};
 
-	boolean[][] BLOCK_LAYING_SWITCH_ENGINE = { {true, true, true, false, true},
-			{true, false, false, false, false},
-			{false, false, false, true, true},
-			{false, true, true, false, true}, {true, false, true, false, true}};
+	byte[][] BLOCK_LAYING_SWITCH_ENGINE = { {1, 1, 1, 0, 1},
+			{1, 0, 0, 0, 0},
+			{0, 0, 0, 1, 1},
+			{0, 1, 1, 0, 1}, {1, 0, 1, 0, 1}};
 
-	boolean[][] HIGHLIFE_REPLICATOR = { {true, true, true, false, false},
-			{true, false, false, true, false},
-			{true, false, false, false, true},
-			{false, true, false, false, true}, {false, false, true, true, true}};
+	byte[][] HIGHLIFE_REPLICATOR = { {1, 1, 1, 0, 0},
+			{1, 0, 0, 1, 0},
+			{1, 0, 0, 0, 1},
+			{0, 1, 0, 0, 1}, {0, 0, 1, 1, 1}};
 
-	boolean[][] GLIDERS_X_THE_DOZEN = { {true, true, false, false, true},
-			{true, false, false, false, true}, {true, false, false, true, true}};
+	byte[][] GLIDERS_X_THE_DOZEN = { {1, 1, 0, 0, 1},
+			{1, 0, 0, 0, 1}, {1, 0, 0, 1, 1}};
 
-	boolean[][] EMPTY_PATTERN = {};
+	byte[][] EMPTY_PATTERN = {};
 	
 	Ruleset actingRule = new ConwayLifeRule();
 

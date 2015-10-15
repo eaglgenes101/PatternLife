@@ -43,7 +43,7 @@ import com.badlogic.gdx.math.Rectangle;
 public class Engine
 {
 
-	public static final boolean[][] EMPTY_PATTERN = {};
+	public static final byte[][] EMPTY_PATTERN = {};
 
 	public static final PatternEntry nullPattern = new PatternEntry(
 			EMPTY_PATTERN);
@@ -74,7 +74,7 @@ public class Engine
 
 		for (int x = 0; x < basedOn.getWrapper().getW(); x++)
 			for (int y = 0; y < basedOn.getWrapper().getH(); y++)
-				if (basedOn.getCells()[x][y])
+				if (basedOn.getCells()[x][y]!=0)
 					returnPixmap.drawPixel(x, y);
 
 		return returnPixmap;
@@ -238,9 +238,9 @@ public class Engine
 				{
 					for (int y = 0; y < p1.getWrapper().getH(); y++)
 					{
-						if (p1.getCells()[x][y] && !p2.getCells()[x][y])
+						if (p1.getCells()[x][y] > p2.getCells()[x][y])
 							return 1;
-						if (!p1.getCells()[x][y] && p2.getCells()[x][y])
+						if (p1.getCells()[x][y] < p2.getCells()[x][y])
 							return -1;
 					}
 				}
@@ -346,6 +346,15 @@ public class Engine
 
 	}
 
+	public static byte getByte(byte[][] array, int xCoord, int yCoord)
+	{
+		if (xCoord < 0 || xCoord >= array.length)
+			return 0;
+		if (yCoord < 0 || yCoord >= array[0].length)
+			return 0;
+		return array[xCoord][yCoord];
+	}
+	
 	public static boolean isActive(boolean[][] array, int xCoord, int yCoord)
 	{
 		if (xCoord < 0 || xCoord >= array.length)

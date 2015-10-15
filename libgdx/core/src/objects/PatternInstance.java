@@ -45,7 +45,7 @@ public class PatternInstance
 		basedOn = startBase;
 	}
 
-	public PatternInstance(int startX, int startY, boolean[][] startCells,
+	public PatternInstance(int startX, int startY, byte[][] startCells,
 			ReferenceMap<PatternWrapper, PatternEntry> lookUpMap)
 	{
 		PatternEntry basedPattern = new PatternEntry(startCells);
@@ -112,7 +112,7 @@ public class PatternInstance
 			PatternInstance other)
 	{
 		Rectangle nextRectangle = getRectangle().merge(other.getRectangle());
-		boolean[][] combinedCells = new boolean[Math.round(nextRectangle.getWidth())][Math.round(nextRectangle
+		byte[][] combinedCells = new byte[Math.round(nextRectangle.getWidth())][Math.round(nextRectangle
 				.getHeight())];
 		int thisOffsetX = x - Math.round(nextRectangle.getX());
 		int thisOffsetY = y - Math.round(nextRectangle.getY());
@@ -122,15 +122,15 @@ public class PatternInstance
 		for (int x = 0; x < Math.round(getRectangle().getWidth())-2; x++)
 			for (int y = 0; y < Math.round(getRectangle().getHeight())-2; y++)
 			{
-				if (basedOn.getCells()[x][y])
-					combinedCells[x + thisOffsetX][y + thisOffsetY] = true;
+				if (basedOn.getCells()[x][y]!=0)
+					combinedCells[x + thisOffsetX][y + thisOffsetY] = basedOn.getCells()[x][y];
 			}
 
 		for (int x = 0; x < Math.round(other.getRectangle().getWidth())-2; x++)
 			for (int y = 0; y < Math.round(other.getRectangle().getHeight())-2; y++)
 			{
-				if (other.getEntry().getCells()[x][y])
-					combinedCells[x + otherOffsetX][y + otherOffsetY] = true;
+				if (other.getEntry().getCells()[x][y]!=0)
+					combinedCells[x + otherOffsetX][y + otherOffsetY] = other.getEntry().getCells()[x][y];
 			}
 
 		return new PatternInstance(
