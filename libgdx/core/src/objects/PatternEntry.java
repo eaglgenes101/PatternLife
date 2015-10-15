@@ -126,9 +126,9 @@ public class PatternEntry
 			for (int x = 0; x < cells.getW(); x++)
 				for (int y = 0; y < cells.getH(); y++)
 				{
-					if (cells.pattern[x][y]!=0 && isPart[x][y])
+					if (isPart[x][y])
 						cellsOne[x][y] = cells.pattern[x][y];
-					if (cells.pattern[x][y]!=0 && !isPart[x][y])
+					else
 						cellsTwo[x][y] = cells.pattern[x][y];
 				}
 			PatternEntry componentPatternOne = new PatternEntry(cellsOne);
