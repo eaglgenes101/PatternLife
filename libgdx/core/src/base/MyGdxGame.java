@@ -84,6 +84,9 @@ public class MyGdxGame implements ApplicationListener
 		currentPatterns.add(new PatternInstance(400, -300, R_PENTOMINO, knownPatterns));
 		batch = new SpriteBatch();
 		genCounter = 0;
+
+		viewport = new ScreenViewport();
+		viewport.apply(true);
 	}
 
 	@Override
@@ -127,8 +130,6 @@ public class MyGdxGame implements ApplicationListener
 	@Override
 	public void resize(int width, int height)
 	{
-		viewport = new ScreenViewport();
-		viewport.apply(true);
 		viewport.update(width, height, true);
 	}
 
