@@ -15,6 +15,7 @@ import rules.Ruleset;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
@@ -51,6 +52,8 @@ public class MyGdxGame implements ApplicationListener
 	ReferenceMap<PatternWrapper, PatternEntry> knownPatterns;
 
 	SpriteBatch batch;
+	
+	boolean willStep = true;
 
 	int genCounter;
 
@@ -72,7 +75,9 @@ public class MyGdxGame implements ApplicationListener
 
 	byte[][] GLIDERS_X_THE_DOZEN = { {1, 1, 0, 0, 1}, {1, 0, 0, 0, 1}, {1, 0, 0, 1, 1}};
 
-	byte[][] EMPTY_PATTERN = {};
+	byte[][] EMPTY_PATTERN = {{}};
+	
+	byte[][] ONE_CELL = {{1}};
 
 	Ruleset actingRule = new ConwayLifeRule();
 
@@ -82,7 +87,7 @@ public class MyGdxGame implements ApplicationListener
 		currentPatterns = new LinkedList<PatternInstance>();
 		knownPatterns = new ReferenceMap<>(AbstractReferenceMap.ReferenceStrength.SOFT,
 				AbstractReferenceMap.ReferenceStrength.SOFT);
-		currentPatterns.add(new PatternInstance(400, -300, R_PENTOMINO, knownPatterns));
+		currentPatterns.add(new PatternInstance(400, -200, R_PENTOMINO, knownPatterns));
 		batch = new SpriteBatch();
 		genCounter = 0;
 
@@ -101,22 +106,39 @@ public class MyGdxGame implements ApplicationListener
 		Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT); // clears the buffer
 		batch.begin();
 		LinkedList<PatternInstance> newList = new LinkedList<>();
+		
+		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+		{
+			willStep = !willStep;
+		}
+		
+		if (Gdx.input.isTouched())
+		{
+			currentPatterns.add(new PatternInstance(Gdx.input.getX(), Gdx.input.getY()-Gdx.graphics.getHeight(), ONE_CELL, knownPatterns));
+		}
 
 		for (ListIterator<PatternInstance> iter = currentPatterns.listIterator(); iter.hasNext();)
 		{
 			PatternInstance currentPatternInstance = iter.next();
-			PatternInstance[] successors = currentPatternInstance.step(actingRule, knownPatterns);
-			for (PatternInstance i : successors)
-				newList.add(i);
+			if (willStep)
+			{
+				PatternInstance[] successors = currentPatternInstance.step(actingRule, knownPatterns);
+				for (PatternInstance i : successors)
+					newList.add(i);
+			}
+			else
+			{
+				newList.add(currentPatternInstance);
+			}
 
 			Texture tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.WHITE);
 
 			batch.draw(tx, currentPatternInstance.getX(), -currentPatternInstance.getY()
 					- currentPatternInstance.getRectangle().getHeight());
 			
-			tx.dispose();
 		}
 		batch.end();
+		
 		currentPatterns = newList; // We can afford to be sloppy, the garbage
 									// collector will do it.
 
@@ -124,7 +146,6 @@ public class MyGdxGame implements ApplicationListener
 		currentPatterns = Engine.cleanList(Engine.massMerge(collisionList, newList, knownPatterns, actingRule));
 
 		genCounter++;
-		System.out.println(currentPatterns.size());
 
 		// System.gc();
 
