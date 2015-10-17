@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -108,9 +109,12 @@ public class MyGdxGame implements ApplicationListener
 			for (PatternInstance i : successors)
 				newList.add(i);
 
-			batch.draw(Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.WHITE),
-					currentPatternInstance.getX(), -currentPatternInstance.getY()
-							- currentPatternInstance.getRectangle().getHeight());
+			Texture tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.WHITE);
+
+			batch.draw(tx, currentPatternInstance.getX(), -currentPatternInstance.getY()
+					- currentPatternInstance.getRectangle().getHeight());
+			
+			tx.dispose();
 		}
 		batch.end();
 		currentPatterns = newList; // We can afford to be sloppy, the garbage
@@ -129,8 +133,8 @@ public class MyGdxGame implements ApplicationListener
 	@Override
 	public void resize(int width, int height)
 	{
-        viewport.update(width, height, true);
-        viewport.apply(true);
+		viewport.update(width, height, true);
+		viewport.apply(true);
 	}
 
 	@Override

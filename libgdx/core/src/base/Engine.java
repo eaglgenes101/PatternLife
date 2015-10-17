@@ -79,7 +79,10 @@ public class Engine
 
 	public static Texture generatePatternTexture(PatternEntry basedOn, Color color)
 	{
-		return new Texture(generatePatternPixmap(basedOn, color));
+		Pixmap px = generatePatternPixmap(basedOn, color);
+		Texture tx = new Texture(px);
+		px.dispose();
+		return tx;
 	}
 
 	// Returns patterns that are likely to be collisions
