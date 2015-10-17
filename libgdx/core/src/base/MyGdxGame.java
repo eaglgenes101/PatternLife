@@ -1,13 +1,10 @@
 package base;
 
-import input.HighlightInputHandler;
-
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.TreeSet;
 
 import org.apache.commons.collections4.map.*;
-import org.apache.commons.lang3.tuple.Pair;
 
 import objects.PatternEntry;
 import objects.PatternInstance;
@@ -18,10 +15,8 @@ import rules.Ruleset;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;

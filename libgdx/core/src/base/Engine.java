@@ -9,7 +9,6 @@ import java.util.ListIterator;
 import java.util.TreeSet;
 
 import org.apache.commons.collections4.map.ReferenceMap;
-import org.apache.commons.lang3.tuple.Pair;
 
 import objects.PatternEntry;
 import objects.PatternInstance;
@@ -239,6 +238,11 @@ public class Engine
 
 	static class TreeComparator implements Comparator<TreeSet<PatternInstance>>, Serializable
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5813705474478664901L;
+
 		public int compare(TreeSet<PatternInstance> t1, TreeSet<PatternInstance> t2)
 		{
 			InstanceComparator i = new InstanceComparator();
@@ -250,6 +254,11 @@ public class Engine
 
 	static class InstanceComparator implements Comparator<PatternInstance>, Serializable
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7403013395596959125L;
+
 		public int compare(PatternInstance p1, PatternInstance p2)
 		{
 			EntryComparator e = new EntryComparator();
@@ -271,6 +280,11 @@ public class Engine
 
 	static public class EntryComparator implements Comparator<PatternEntry>, Serializable
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4092108741360732815L;
+
 		public int compare(PatternEntry p1, PatternEntry p2)
 		{
 			if (p1 == null && p2 == null)
