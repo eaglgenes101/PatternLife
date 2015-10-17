@@ -45,15 +45,12 @@ public class Engine
 
 	public static final byte[][] EMPTY_PATTERN = {};
 
-	public static final PatternEntry nullPattern = new PatternEntry(
-			EMPTY_PATTERN);
+	public static final PatternEntry nullPattern = new PatternEntry(EMPTY_PATTERN);
 
-	public static LinkedList<PatternInstance> cleanList(
-			LinkedList<PatternInstance> toClean)
+	public static LinkedList<PatternInstance> cleanList(LinkedList<PatternInstance> toClean)
 	{
 		PatternInstance nowPatternInstance = null;
-		for (ListIterator<PatternInstance> li = toClean.listIterator(); li
-				.hasNext();)
+		for (ListIterator<PatternInstance> li = toClean.listIterator(); li.hasNext();)
 		{
 			nowPatternInstance = li.next();
 			if (nowPatternInstance.getEntry().equals(nullPattern))
@@ -66,32 +63,29 @@ public class Engine
 
 	public static Pixmap generatePatternPixmap(PatternEntry basedOn, Color color)
 	{
-		Pixmap returnPixmap = new Pixmap(basedOn.getWrapper().getW(), basedOn
-				.getWrapper().getH(), Pixmap.Format.RGBA8888);
+		Pixmap returnPixmap = new Pixmap(basedOn.getWrapper().getW(), basedOn.getWrapper().getH(),
+				Pixmap.Format.RGBA8888);
 		returnPixmap.setColor(Color.rgba8888(0, 0, 0, 0));
 		returnPixmap.fill();
 		returnPixmap.setColor(color);
 
 		for (int x = 0; x < basedOn.getWrapper().getW(); x++)
 			for (int y = 0; y < basedOn.getWrapper().getH(); y++)
-				if (basedOn.getCells()[x][y]!=0)
+				if (basedOn.getCells()[x][y] != 0)
 					returnPixmap.drawPixel(x, y);
 
 		return returnPixmap;
 	}
 
-	public static Texture generatePatternTexture(PatternEntry basedOn,
-			Color color)
+	public static Texture generatePatternTexture(PatternEntry basedOn, Color color)
 	{
 		return new Texture(generatePatternPixmap(basedOn, color));
 	}
 
 	// Returns patterns that are likely to be collisions
-	public static TreeSet<Pair<PatternInstance, PatternInstance>> findCollisions(
-			List<PatternInstance> instanceList, int caseThreshold)
+	public static TreeSet<TreeSet<PatternInstance>> findCollisions(List<PatternInstance> instanceList, int caseThreshold)
 	{
-		TreeSet<Pair<PatternInstance, PatternInstance>> returnSet = new TreeSet<>(
-				new PairComparator());
+		TreeSet<TreeSet<PatternInstance>> returnSet = new TreeSet<>(new TreeComparator());
 
 		if (instanceList.size() < 2)
 			return returnSet; // Our base case
@@ -99,19 +93,18 @@ public class Engine
 		if (instanceList.size() < caseThreshold)
 		{
 			PatternInstance currentInstance = null;
-			for (ListIterator<PatternInstance> i = instanceList.listIterator(); i
-					.hasNext();)
+			for (ListIterator<PatternInstance> i = instanceList.listIterator(); i.hasNext();)
 			{
 				currentInstance = i.next();
 				PatternInstance otherInstance = null;
-				for (ListIterator<PatternInstance> j = instanceList
-						.listIterator(i.nextIndex()); j.hasNext();)
+				for (ListIterator<PatternInstance> j = instanceList.listIterator(i.nextIndex()); j.hasNext();)
 				{
 					otherInstance = j.next();
 					if (currentInstance != otherInstance
-							&& currentInstance.getRectangle().overlaps(
-									otherInstance.getRectangle()))
-						returnSet.add(Pair.of(currentInstance, otherInstance));
+							&& currentInstance.getRectangle().overlaps(otherInstance.getRectangle()))
+					{
+						returnSet = addPair(returnSet, currentInstance, otherInstance);
+					}
 				}
 			}
 			return returnSet; // Our other base case
@@ -120,8 +113,7 @@ public class Engine
 		Rectangle getRect = instanceList.get(0).getRectangle();
 		// Create a super-rectangle that encompasses all the objects
 		PatternInstance currentInstance = null;
-		for (ListIterator<PatternInstance> i = instanceList.listIterator(1); i
-				.hasNext();)
+		for (ListIterator<PatternInstance> i = instanceList.listIterator(1); i.hasNext();)
 		{
 			currentInstance = i.next();
 			getRect = getRect.merge(currentInstance.getRectangle());
@@ -132,20 +124,16 @@ public class Engine
 		List<PatternInstance> listQ3 = new LinkedList<>();
 		List<PatternInstance> listQ4 = new LinkedList<>();
 
-		Rectangle rectQ1 = new Rectangle(getRect.getX(), getRect.getY(),
-				getRect.getWidth() / 2 + 1, getRect.getHeight() / 2 + 1);
-		Rectangle rectQ2 = new Rectangle(getRect.getX(), getRect.getY()
-				+ getRect.getHeight() / 2 + 1, getRect.getWidth() / 2 + 1,
+		Rectangle rectQ1 = new Rectangle(getRect.getX(), getRect.getY(), getRect.getWidth() / 2 + 1,
 				getRect.getHeight() / 2 + 1);
-		Rectangle rectQ3 = new Rectangle(getRect.getX() + getRect.getWidth()
-				/ 2 + 1, getRect.getY() + getRect.getHeight() / 2 + 1,
+		Rectangle rectQ2 = new Rectangle(getRect.getX(), getRect.getY() + getRect.getHeight() / 2 + 1,
 				getRect.getWidth() / 2 + 1, getRect.getHeight() / 2 + 1);
-		Rectangle rectQ4 = new Rectangle(getRect.getX() + getRect.getWidth()
-				/ 2 + 1, getRect.getY(), getRect.getWidth() / 2 + 1,
-				getRect.getHeight() / 2 + 1);
+		Rectangle rectQ3 = new Rectangle(getRect.getX() + getRect.getWidth() / 2 + 1, getRect.getY()
+				+ getRect.getHeight() / 2 + 1, getRect.getWidth() / 2 + 1, getRect.getHeight() / 2 + 1);
+		Rectangle rectQ4 = new Rectangle(getRect.getX() + getRect.getWidth() / 2 + 1, getRect.getY(),
+				getRect.getWidth() / 2 + 1, getRect.getHeight() / 2 + 1);
 
-		for (ListIterator<PatternInstance> iter = instanceList.listIterator(); iter
-				.hasNext();)
+		for (ListIterator<PatternInstance> iter = instanceList.listIterator(); iter.hasNext();)
 		{
 			currentInstance = iter.next();
 			if (currentInstance.getRectangle().overlaps(rectQ1))
@@ -158,20 +146,97 @@ public class Engine
 				listQ4.add(currentInstance);
 		}
 
-		returnSet.addAll(findCollisions(listQ1, caseThreshold * 2));
-		returnSet.addAll(findCollisions(listQ2, caseThreshold * 2));
-		returnSet.addAll(findCollisions(listQ3, caseThreshold * 2));
-		returnSet.addAll(findCollisions(listQ4, caseThreshold * 2));
+		for (TreeSet<PatternInstance> t1 : findCollisions(listQ1, caseThreshold*2))
+			resolveTree(returnSet, t1);
+		for (TreeSet<PatternInstance> t2 : findCollisions(listQ2, caseThreshold*2))
+			resolveTree(returnSet, t2);
+		for (TreeSet<PatternInstance> t3 : findCollisions(listQ3, caseThreshold*2))
+			resolveTree(returnSet, t3);
+		for (TreeSet<PatternInstance> t4 : findCollisions(listQ4, caseThreshold*2))
+			resolveTree(returnSet, t4);
 
 		return returnSet;
 
 	}
 
-	static class TreeComparator implements
-			Comparator<TreeSet<PatternInstance>>, Serializable
+	static TreeSet<TreeSet<PatternInstance>> resolveTree(TreeSet<TreeSet<PatternInstance>> tree,
+			TreeSet<PatternInstance> colls)
 	{
-		public int compare(TreeSet<PatternInstance> t1,
-				TreeSet<PatternInstance> t2)
+		TreeSet<PatternInstance> workingTree = new TreeSet<>(new InstanceComparator());
+		for (PatternInstance p : colls)
+		{
+			TreeSet<PatternInstance> onThisTree = null;
+			for (TreeSet<PatternInstance> it : tree)
+			{
+				if (it.contains(p))
+				{
+					onThisTree = it;
+					break;
+				}
+			}
+			
+			if (onThisTree == null)
+			{
+				workingTree.add(p);
+			}
+			else
+			{
+				workingTree.addAll(onThisTree);
+				tree.remove(onThisTree);
+			}
+		}
+		tree.add(workingTree);
+		return tree;
+	}
+
+	static TreeSet<TreeSet<PatternInstance>> addPair(TreeSet<TreeSet<PatternInstance>> tree, PatternInstance p1,
+			PatternInstance p2)
+	{
+		TreeSet<PatternInstance> t1 = null;
+		TreeSet<PatternInstance> t2 = null;
+		for (TreeSet<PatternInstance> aTree : tree)
+		{
+			if (aTree.contains(p1))
+			{
+				t1 = aTree;
+				break;
+			}
+		}
+		for (TreeSet<PatternInstance> aTree : tree)
+		{
+			if (aTree.contains(p2))
+			{
+				t2 = aTree;
+				break;
+			}
+		}
+
+		if (t1 == null && t2 == null)
+		{
+			TreeSet<PatternInstance> newTree = new TreeSet<>(new InstanceComparator());
+			newTree.add(p1);
+			newTree.add(p2);
+			tree.add(newTree);
+		}
+		else if (t1 == null && t2 != null)
+		{
+			t2.add(p1);
+		}
+		else if (t1 != null && t2 == null)
+		{
+			t1.add(p2);
+		}
+		else if (t1 != t2)
+		{
+			t1.addAll(t2);
+			tree.remove(t2);
+		}
+		return tree;
+	}
+
+	static class TreeComparator implements Comparator<TreeSet<PatternInstance>>, Serializable
+	{
+		public int compare(TreeSet<PatternInstance> t1, TreeSet<PatternInstance> t2)
 		{
 			InstanceComparator i = new InstanceComparator();
 			PatternInstance v1 = t1.first();
@@ -180,8 +245,7 @@ public class Engine
 		}
 	}
 
-	static class InstanceComparator implements Comparator<PatternInstance>,
-			Serializable
+	static class InstanceComparator implements Comparator<PatternInstance>, Serializable
 	{
 		public int compare(PatternInstance p1, PatternInstance p2)
 		{
@@ -202,23 +266,7 @@ public class Engine
 		}
 	}
 
-	static class PairComparator implements
-			Comparator<Pair<PatternInstance, PatternInstance>>, Serializable
-	{
-		public int compare(Pair<PatternInstance, PatternInstance> p1,
-				Pair<PatternInstance, PatternInstance> p2)
-		{
-			InstanceComparator i = new InstanceComparator();
-			if (i.compare(p1.getLeft(), p2.getLeft()) != 0)
-				return i.compare(p1.getLeft(), p2.getLeft());
-			if (i.compare(p1.getRight(), p2.getRight()) != 0)
-				return i.compare(p1.getRight(), p2.getRight());
-			return 0;
-		}
-	}
-
-	static public class EntryComparator implements Comparator<PatternEntry>,
-			Serializable
+	static public class EntryComparator implements Comparator<PatternEntry>, Serializable
 	{
 		public int compare(PatternEntry p1, PatternEntry p2)
 		{
@@ -249,72 +297,16 @@ public class Engine
 		}
 	}
 
-	static LinkedList<PatternInstance> massMerge(
-			TreeSet<Pair<PatternInstance, PatternInstance>> collisions,
-			LinkedList<PatternInstance> instances,
-			ReferenceMap<PatternWrapper, PatternEntry> knownPatterns,
+	static LinkedList<PatternInstance> massMerge(TreeSet<TreeSet<PatternInstance>> collisions,
+			LinkedList<PatternInstance> instances, ReferenceMap<PatternWrapper, PatternEntry> knownPatterns,
 			Ruleset rule)
 	{
-		TreeSet<TreeSet<PatternInstance>> mergeGroups = new TreeSet<>(
-				new TreeComparator());
-		for (Pair<PatternInstance, PatternInstance> currentPair : collisions)
-		{
-			PatternInstance first = currentPair.getLeft();
-			PatternInstance second = currentPair.getRight();
-			TreeSet<PatternInstance> firstTree = null;
-			TreeSet<PatternInstance> secondTree = null;
-			for (TreeSet<PatternInstance> group : mergeGroups)
-			{
-				if (group.contains(first))
-				{
-					firstTree = group;
-					break;
-				}
-				if (group.contains(second))
-				{
-					secondTree = group;
-					break;
-				}
-			}
-
-			if (firstTree == null && secondTree == null)
-			{
-				TreeSet<PatternInstance> thisTree = new TreeSet<>(
-						new InstanceComparator());
-				thisTree.add(first);
-				thisTree.add(second);
-				mergeGroups.add(thisTree);
-				continue;
-			}
-			else if (firstTree == secondTree)
-			{
-				// Do nothing
-			}
-			else if (firstTree == null)
-			{
-				secondTree.add(first);
-			}
-			else if (secondTree == null)
-			{
-				firstTree.add(second);
-			}
-			else
-			{
-				firstTree.addAll(secondTree);
-				mergeGroups.remove(secondTree);
-			}
-
-		}
-
-		// Now we have a set of treesets for grouping
-
 		PatternInstance currentInstances = null;
-		for (ListIterator<PatternInstance> i = instances.listIterator(); i
-				.hasNext();)
+		for (ListIterator<PatternInstance> i = instances.listIterator(); i.hasNext();)
 		{
 			currentInstances = i.next();
 			boolean shouldRemove = false;
-			for (TreeSet<PatternInstance> groups : mergeGroups)
+			for (TreeSet<PatternInstance> groups : collisions)
 			{
 				if (groups.contains(currentInstances))
 				{
@@ -328,7 +320,7 @@ public class Engine
 
 		// If this blows up in my face, I'm not surprised.
 
-		for (TreeSet<PatternInstance> group : mergeGroups)
+		for (TreeSet<PatternInstance> group : collisions)
 		{
 			PatternInstance seed = group.first();
 			for (PatternInstance pattern : group)
@@ -354,7 +346,7 @@ public class Engine
 			return 0;
 		return array[xCoord][yCoord];
 	}
-	
+
 	public static boolean isActive(boolean[][] array, int xCoord, int yCoord)
 	{
 		if (xCoord < 0 || xCoord >= array.length)

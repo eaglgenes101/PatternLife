@@ -86,7 +86,6 @@ public class MyGdxGame implements ApplicationListener
 		genCounter = 0;
 
 		viewport = new ScreenViewport();
-		viewport.apply(true);
 	}
 
 	@Override
@@ -117,7 +116,7 @@ public class MyGdxGame implements ApplicationListener
 		currentPatterns = newList; // We can afford to be sloppy, the garbage
 									// collector will do it.
 
-		TreeSet<Pair<PatternInstance, PatternInstance>> collisionList = Engine.findCollisions(newList, 5);
+		TreeSet<TreeSet<PatternInstance>> collisionList = Engine.findCollisions(newList, 5);
 		currentPatterns = Engine.cleanList(Engine.massMerge(collisionList, newList, knownPatterns, actingRule));
 
 		genCounter++;
@@ -130,7 +129,8 @@ public class MyGdxGame implements ApplicationListener
 	@Override
 	public void resize(int width, int height)
 	{
-		viewport.update(width, height, true);
+        viewport.update(width, height, true);
+        viewport.apply(true);
 	}
 
 	@Override
