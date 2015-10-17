@@ -1,5 +1,7 @@
 package base;
 
+import input.HighlightInputHandler;
+
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.TreeSet;
@@ -53,9 +55,9 @@ public class MyGdxGame implements ApplicationListener
 
 	SpriteBatch batch;
 	
-	boolean willStep = true;
-
-	int genCounter;
+	boolean willStep = false;
+	
+	boolean oneStep = false;
 
 	Viewport viewport;
 
@@ -89,7 +91,6 @@ public class MyGdxGame implements ApplicationListener
 				AbstractReferenceMap.ReferenceStrength.SOFT);
 		currentPatterns.add(new PatternInstance(400, -200, R_PENTOMINO, knownPatterns));
 		batch = new SpriteBatch();
-		genCounter = 0;
 
 		viewport = new ScreenViewport();
 	}
@@ -107,20 +108,41 @@ public class MyGdxGame implements ApplicationListener
 		batch.begin();
 		LinkedList<PatternInstance> newList = new LinkedList<>();
 		
+		int x = Gdx.input.getX();
+		int y = Gdx.input.getY();
+		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
 		{
 			willStep = !willStep;
 		}
 		
+		if (Gdx.input.isKeyJustPressed(Input.Keys.TAB))
+		{
+			oneStep = true;
+		}
+		
 		if (Gdx.input.isTouched())
 		{
-			currentPatterns.add(new PatternInstance(Gdx.input.getX(), Gdx.input.getY()-Gdx.graphics.getHeight(), ONE_CELL, knownPatterns));
+			currentPatterns.add(new PatternInstance(x, y-Gdx.graphics.getHeight()+1, ONE_CELL, knownPatterns));
 		}
 
 		for (ListIterator<PatternInstance> iter = currentPatterns.listIterator(); iter.hasNext();)
 		{
+
 			PatternInstance currentPatternInstance = iter.next();
-			if (willStep)
+			
+			Texture tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.WHITE);
+			if (currentPatternInstance.getRectangle().contains(x, y-Gdx.graphics.getHeight()+1))
+			{
+				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.RED);
+				if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE))
+				{
+					iter.remove();
+					continue;
+				}
+			}
+			
+			if (willStep || oneStep)
 			{
 				PatternInstance[] successors = currentPatternInstance.step(actingRule, knownPatterns);
 				for (PatternInstance i : successors)
@@ -130,8 +152,7 @@ public class MyGdxGame implements ApplicationListener
 			{
 				newList.add(currentPatternInstance);
 			}
-
-			Texture tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.WHITE);
+			
 
 			batch.draw(tx, currentPatternInstance.getX(), -currentPatternInstance.getY()
 					- currentPatternInstance.getRectangle().getHeight());
@@ -144,10 +165,8 @@ public class MyGdxGame implements ApplicationListener
 
 		TreeSet<TreeSet<PatternInstance>> collisionList = Engine.findCollisions(newList, 5);
 		currentPatterns = Engine.cleanList(Engine.massMerge(collisionList, newList, knownPatterns, actingRule));
-
-		genCounter++;
-
-		// System.gc();
+		
+		oneStep = false;
 
 	}
 
