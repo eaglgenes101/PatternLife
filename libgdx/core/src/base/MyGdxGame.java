@@ -130,13 +130,13 @@ public class MyGdxGame implements ApplicationListener
 			Texture tx = null;
 			
 			if (currentPatternInstance instanceof FrozenPatternInstance)
-				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.BROWN);
+				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.CYAN);
 			else
-				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.WHITE);
+				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.YELLOW);
 			
 			if (currentPatternInstance.getRectangle().contains(x, y-Gdx.graphics.getHeight()+1))
 			{
-				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.ORANGE);
+				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.MAGENTA);
 				if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE))
 				{
 					iter.remove();
