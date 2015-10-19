@@ -1,12 +1,14 @@
 package base;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.TreeSet;
+import java.util.function.BinaryOperator;
 
 import org.apache.commons.collections4.map.ReferenceMap;
 
@@ -313,6 +315,39 @@ public class Engine
 			return 0;
 		}
 	}
+	
+	public static class IntArrayComparator implements Comparator<int[]>, Serializable
+	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2961394193017916069L;
+
+		@Override
+		public int compare(int[] o1, int[] o2)
+		{
+			if (o1 == null && o2 == null)
+				return 0;
+			else if (o1 == null)
+				return 1;
+			else if (o2 == null)
+				return -1;
+			for (int index = 0; index < o1.length && index < o2.length; index++)
+			{
+				if (o1[index] > o2[index])
+					return -1;
+				if (o1[index] < o2[index])
+					return 1;
+			}
+			if (o1.length > o2.length)
+				return -1;
+			if (o1.length < o2.length)
+				return 1;
+			return 0;
+		}
+		
+	}
 
 	static LinkedList<PatternInstance> massMerge(TreeSet<TreeSet<PatternInstance>> collisions,
 			LinkedList<PatternInstance> instances, ReferenceMap<PatternWrapper, PatternEntry> knownPatterns,
@@ -335,17 +370,29 @@ public class Engine
 				i.remove();
 		}
 
-		// If this blows up in my face, I'm not surprised.
-
 		for (TreeSet<PatternInstance> group : collisions)
 		{
-			PatternInstance seed = group.first();
-			for (PatternInstance pattern : group)
+			TreeSet<PatternInstance> runningParts = group;
+			boolean stillFindingParts = true;
+			
+			while (stillFindingParts)
 			{
-				seed = seed.merge(knownPatterns, pattern);
+				stillFindingParts = false;
+				
+				eachMatchLoop:
+				for (PatternInstance part1 : runningParts)
+					for (PatternInstance part2 : runningParts)
+						if (part1 != part2 && part1.collides(rule, part2))
+						{
+							stillFindingParts = true;
+							runningParts.remove(part1);
+							runningParts.remove(part2);
+							runningParts.add(part1.merge(knownPatterns, part2));
+							break eachMatchLoop;
+						}
 			}
-			PatternInstance[] parts = seed.segment(knownPatterns, rule);
-			for (PatternInstance part : parts)
+			
+			for (PatternInstance part : runningParts)
 			{
 				instances.add(part);
 			}

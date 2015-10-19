@@ -6,6 +6,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.collections4.map.*;
 
+import objects.FrozenPatternInstance;
 import objects.PatternEntry;
 import objects.PatternInstance;
 import objects.PatternWrapper;
@@ -118,18 +119,24 @@ public class MyGdxGame implements ApplicationListener
 		
 		if (Gdx.input.isTouched())
 		{
-			currentPatterns.add(new PatternInstance(x, y-Gdx.graphics.getHeight()+1, ONE_CELL, knownPatterns));
+			currentPatterns.add(new FrozenPatternInstance(new PatternInstance(x, y-Gdx.graphics.getHeight()+1, ONE_CELL, knownPatterns)));
 		}
-
+		
 		for (ListIterator<PatternInstance> iter = currentPatterns.listIterator(); iter.hasNext();)
 		{
 
 			PatternInstance currentPatternInstance = iter.next();
 			
-			Texture tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.WHITE);
+			Texture tx = null;
+			
+			if (currentPatternInstance instanceof FrozenPatternInstance)
+				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.BROWN);
+			else
+				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.WHITE);
+			
 			if (currentPatternInstance.getRectangle().contains(x, y-Gdx.graphics.getHeight()+1))
 			{
-				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.RED);
+				tx = Engine.generatePatternTexture(currentPatternInstance.getEntry(), Color.ORANGE);
 				if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE))
 				{
 					iter.remove();
@@ -142,24 +149,23 @@ public class MyGdxGame implements ApplicationListener
 				PatternInstance[] successors = currentPatternInstance.step(actingRule, knownPatterns);
 				for (PatternInstance i : successors)
 					newList.add(i);
+				batch.draw(tx, currentPatternInstance.getX(), -currentPatternInstance.getY()
+						- currentPatternInstance.getRectangle().getHeight());
 			}
 			else
 			{
 				newList.add(currentPatternInstance);
+				batch.draw(tx, currentPatternInstance.getX(), -currentPatternInstance.getY()
+						- currentPatternInstance.getRectangle().getHeight());
 			}
 			
-
-			batch.draw(tx, currentPatternInstance.getX(), -currentPatternInstance.getY()
-					- currentPatternInstance.getRectangle().getHeight());
-			
 		}
+		
 		batch.end();
 		
-		currentPatterns = newList; // We can afford to be sloppy, the garbage
-									// collector will do it.
-
-		TreeSet<TreeSet<PatternInstance>> collisionList = Engine.findCollisions(newList, 5);
-		currentPatterns = Engine.cleanList(Engine.massMerge(collisionList, newList, knownPatterns, actingRule));
+		TreeSet<TreeSet<PatternInstance>> collisionSet = Engine.findCollisions(newList, 5);
+		
+		currentPatterns = Engine.cleanList(Engine.massMerge(collisionSet, newList, knownPatterns, actingRule));
 		
 		oneStep = false;
 

@@ -1,8 +1,11 @@
 package objects;
 
+import java.util.TreeSet;
+
 import org.apache.commons.collections4.map.ReferenceMap;
 
 import rules.Ruleset;
+import base.Engine;
 
 import com.badlogic.gdx.math.Rectangle;
 
@@ -104,6 +107,37 @@ public class PatternInstance
 		}
 		return returnArray;
 	}
+	
+	// Determine definitively if two patterns collide.
+	// 
+	public boolean collides(Ruleset rule, PatternInstance other)
+	{
+		int dx = x - other.getX(); 
+		int dy = y - other.getY();
+		
+		TreeSet<int[]> coordinates = new TreeSet<int[]>(new Engine.IntArrayComparator());
+		
+		//Come up with all possible collision points
+		for (int x = 0; x < Math.round(getRectangle().getWidth())-2; x++)
+			for (int y = 0; y < Math.round(getRectangle().getHeight())-2; y++)
+				if (getEntry().getCells()[x][y] != 0)
+				{
+					for (int[] diffs : rule.getNeighborField())
+					{
+						int[] toAdd = {x+diffs[0], y+diffs[1]};
+						coordinates.add(toAdd);
+					}
+				}
+		
+		for (int[] point : coordinates)
+		{
+			if (Engine.getByte(other.getEntry().getCells(), point[0]+dx, point[1]+dy) != 0)
+				return true;
+		}
+		
+		return false;
+		
+	}
 
 	// When two PatternInstances collide, use this to merge them
 	// 
@@ -121,7 +155,10 @@ public class PatternInstance
 
 		for (int x = 0; x < Math.round(getRectangle().getWidth())-2; x++)
 			for (int y = 0; y < Math.round(getRectangle().getHeight())-2; y++)
-				combinedCells[x + thisOffsetX][y + thisOffsetY] = basedOn.getCells()[x][y];
+			{
+				if (getEntry().getCells()[x][y]!=0)
+					combinedCells[x + thisOffsetX][y + thisOffsetY] = basedOn.getCells()[x][y];
+			}
 
 		for (int x = 0; x < Math.round(other.getRectangle().getWidth())-2; x++)
 			for (int y = 0; y < Math.round(other.getRectangle().getHeight())-2; y++)

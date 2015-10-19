@@ -27,10 +27,7 @@ public class FrozenPatternInstance extends PatternInstance
 {
 	public FrozenPatternInstance(PatternInstance basedInstance)
 	{
-		super(0, 0, null);
-		basedOn = basedInstance.getEntry();
-		x = basedInstance.getX();
-		y = basedInstance.getY();
+		super(basedInstance.getX(), basedInstance.getY(), basedInstance.getEntry());
 	}
 	
 	public PatternInstance[] step(Ruleset ruleset,
