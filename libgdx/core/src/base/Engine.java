@@ -66,12 +66,17 @@ public class Engine
 				Pixmap.Format.RGBA8888);
 		returnPixmap.setColor(Color.rgba8888(0, 0, 0, 0));
 		returnPixmap.fill();
+
+		returnPixmap.setColor(Color.DARK_GRAY);
+		returnPixmap.drawPixel(0, 0);
+		
 		returnPixmap.setColor(color);
 
 		for (int x = 0; x < basedOn.getWrapper().getW(); x++)
 			for (int y = 0; y < basedOn.getWrapper().getH(); y++)
 				if (basedOn.getCells()[x][y] != 0)
 					returnPixmap.drawPixel(x, y);
+		
 
 		return returnPixmap;
 	}

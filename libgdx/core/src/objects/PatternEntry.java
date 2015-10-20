@@ -201,30 +201,30 @@ public class PatternEntry
 	{
 		int bottomTrim = 0; // This is how the pattern could possibly grow
 		int topTrim = 0;
-		int leftTrim = 0;
 		int rightTrim = 0;
+		int leftTrim = 0;
 
 		boolean canBottomTrim = true;
-		boolean canTopTrim = true;
-		boolean canLeftTrim = true;
+		boolean cantopTrim = true;
 		boolean canRightTrim = true;
+		boolean canLeftTrim = true;
 
-		while (canBottomTrim && bottomTrim < cells.getH())
+		while (cantopTrim && topTrim < cells.getH())
 		{
 			for (int x = 0; x < cells.getW(); x++)
-				if (cells.pattern[x][bottomTrim] != 0)
+				if (cells.pattern[x][topTrim] != 0)
+					cantopTrim = false;
+			if (cantopTrim)
+				topTrim++;
+		}
+
+		while (canBottomTrim && topTrim + bottomTrim < cells.getH())
+		{
+			for (int x = 0; x < cells.getW(); x++)
+				if (cells.pattern[x][cells.getH() - 1 - bottomTrim] != 0)
 					canBottomTrim = false;
 			if (canBottomTrim)
 				bottomTrim++;
-		}
-
-		while (canTopTrim && bottomTrim + topTrim < cells.getH())
-		{
-			for (int x = 0; x < cells.getW(); x++)
-				if (cells.pattern[x][cells.getH() - 1 - topTrim] != 0)
-					canTopTrim = false;
-			if (canTopTrim)
-				topTrim++;
 		}
 
 		while (canLeftTrim && leftTrim < cells.getW())
@@ -245,17 +245,17 @@ public class PatternEntry
 				rightTrim++;
 		}
 
-		if (!(bottomTrim == 0 && topTrim == 0 && leftTrim == 0 && rightTrim == 0))
+		if (!(topTrim == 0 && bottomTrim == 0 && leftTrim == 0 && rightTrim == 0))
 		{
 			byte[][] newCell = new byte[cells.getW() - leftTrim
-					- rightTrim][cells.getH() - bottomTrim - topTrim];
+					- rightTrim][cells.getH() - topTrim - bottomTrim];
 			for (int x = leftTrim; x < cells.getW() - rightTrim; x++)
-				for (int y = bottomTrim; y < cells.getH() - topTrim; y++)
-					newCell[x - leftTrim][y - bottomTrim] = cells.pattern[x][y];
+				for (int y = topTrim; y < cells.getH() - bottomTrim; y++)
+					newCell[x - leftTrim][y - topTrim] = cells.pattern[x][y];
 			cells = new PatternWrapper(newCell);
 		}
 
-		int[] returnArray = {leftTrim, bottomTrim};
+		int[] returnArray = {leftTrim, topTrim};
 		return returnArray;
 
 	}

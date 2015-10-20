@@ -85,10 +85,11 @@ public class MyGdxGame implements ApplicationListener
 		currentPatterns = new LinkedList<PatternInstance>();
 		knownPatterns = new ReferenceMap<>(AbstractReferenceMap.ReferenceStrength.SOFT,
 				AbstractReferenceMap.ReferenceStrength.SOFT);
-		currentPatterns.add(new PatternInstance(400, -200, R_PENTOMINO, knownPatterns));
+		currentPatterns.add(new PatternInstance(200, 200-Gdx.graphics.getHeight()-1, R_PENTOMINO, knownPatterns));
 		batch = new SpriteBatch();
 
 		viewport = new ScreenViewport();
+		viewport.apply(true);
 	}
 
 	@Override
@@ -119,7 +120,11 @@ public class MyGdxGame implements ApplicationListener
 		
 		if (Gdx.input.isTouched())
 		{
-			currentPatterns.add(new FrozenPatternInstance(new PatternInstance(x, y-Gdx.graphics.getHeight()+1, ONE_CELL, knownPatterns)));
+			if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+				currentPatterns.add(new FrozenPatternInstance(new PatternInstance(x, y-Gdx.graphics.getHeight()+1, ONE_CELL, knownPatterns)));
+			else
+				currentPatterns.add(new PatternInstance(x, y-Gdx.graphics.getHeight()+1, ONE_CELL, knownPatterns));
+		
 		}
 		
 		for (ListIterator<PatternInstance> iter = currentPatterns.listIterator(); iter.hasNext();)
@@ -150,13 +155,13 @@ public class MyGdxGame implements ApplicationListener
 				for (PatternInstance i : successors)
 					newList.add(i);
 				batch.draw(tx, currentPatternInstance.getX(), -currentPatternInstance.getY()
-						- currentPatternInstance.getRectangle().getHeight());
+						- currentPatternInstance.getRectangle().getHeight()+1);
 			}
 			else
 			{
 				newList.add(currentPatternInstance);
 				batch.draw(tx, currentPatternInstance.getX(), -currentPatternInstance.getY()
-						- currentPatternInstance.getRectangle().getHeight());
+						- currentPatternInstance.getRectangle().getHeight()+1);
 			}
 			
 		}
