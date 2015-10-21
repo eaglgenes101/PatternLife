@@ -46,35 +46,22 @@ public class MyGdxGame implements ApplicationListener
 {
 
 	LinkedList<PatternInstance> currentPatterns;
-
 	ReferenceMap<PatternWrapper, PatternEntry> knownPatterns;
-
 	SpriteBatch batch;
-	
 	boolean willStep = false;
-	
 	boolean oneStep = false;
-
 	Viewport viewport;
 
 	byte[][] GOSPER_GLIDER_CELLS = { {1, 0, 1}, {0, 1, 1}, {0, 1, 0}};
-
 	byte[][] R_PENTOMINO = { {0, 1, 1}, {1, 1, 0}, {0, 1, 0}};
-
 	byte[][] PENTADECATHON_GRANDPARENT = { {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}};
-
 	byte[][] MOVE_PUFFER = { {1, 0}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {1, 0}};
-
 	byte[][] BLOCK_LAYING_SWITCH_ENGINE = { {1, 1, 1, 0, 1}, {1, 0, 0, 0, 0}, {0, 0, 0, 1, 1}, {0, 1, 1, 0, 1},
 			{1, 0, 1, 0, 1}};
-
 	byte[][] HIGHLIFE_REPLICATOR = { {1, 1, 1, 0, 0}, {1, 0, 0, 1, 0}, {1, 0, 0, 0, 1}, {0, 1, 0, 0, 1},
 			{0, 0, 1, 1, 1}};
-
 	byte[][] GLIDERS_X_THE_DOZEN = { {1, 1, 0, 0, 1}, {1, 0, 0, 0, 1}, {1, 0, 0, 1, 1}};
-
 	byte[][] EMPTY_PATTERN = {{}};
-	
 	byte[][] ONE_CELL = {{1}};
 
 	Ruleset actingRule = new ConwayLifeRule();
@@ -109,14 +96,10 @@ public class MyGdxGame implements ApplicationListener
 		int y = Gdx.input.getY();
 		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-		{
 			willStep = !willStep;
-		}
 		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.TAB))
-		{
 			oneStep = true;
-		}
 		
 		if (Gdx.input.isTouched())
 		{
@@ -131,6 +114,9 @@ public class MyGdxGame implements ApplicationListener
 		{
 
 			PatternInstance currentPatternInstance = iter.next();
+			
+			if (Gdx.input.isKeyJustPressed(Input.Keys.A))
+				currentPatternInstance = new PatternInstance(currentPatternInstance.getX(), currentPatternInstance.getY(), currentPatternInstance.getEntry());
 			
 			Texture tx = null;
 			
