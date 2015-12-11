@@ -3,6 +3,7 @@ package base;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.collections4.map.*;
@@ -158,7 +159,7 @@ public class MyGdxGame implements ApplicationListener
 		
 		batch.end();
 		
-		TreeSet<TreeSet<PatternInstance>> collisionSet = Engine.findCollisions(newList, 5);
+		Set<TreeSet<PatternInstance>> collisionSet = Engine.findCollisions(newList, 5);
 		
 		currentPatterns = Engine.cleanList(Engine.massMerge(collisionSet, newList, knownPatterns, actingRule));
 		

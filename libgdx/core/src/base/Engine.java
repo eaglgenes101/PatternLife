@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.collections4.map.ReferenceMap;
@@ -90,9 +91,9 @@ public class Engine
 	}
 
 	// Returns patterns that are likely to be collisions
-	public static TreeSet<TreeSet<PatternInstance>> findCollisions(List<PatternInstance> instanceList, int caseThreshold)
+	public static Set<TreeSet<PatternInstance>> findCollisions(List<PatternInstance> instanceList, int caseThreshold)
 	{
-		TreeSet<TreeSet<PatternInstance>> returnSet = new TreeSet<>(new TreeComparator());
+		Set<TreeSet<PatternInstance>> returnSet = new TreeSet<>(new TreeComparator());
 
 		if (instanceList.size() < 2)
 			return returnSet; // Our base case
@@ -166,14 +167,14 @@ public class Engine
 
 	}
 
-	static TreeSet<TreeSet<PatternInstance>> resolveTree(TreeSet<TreeSet<PatternInstance>> tree,
-			TreeSet<PatternInstance> colls)
+	static Set<TreeSet<PatternInstance>> resolveTree(Set<TreeSet<PatternInstance>> returnSet,
+			Set<PatternInstance> colls)
 	{
 		TreeSet<PatternInstance> workingTree = new TreeSet<>(new InstanceComparator());
 		for (PatternInstance p : colls)
 		{
 			TreeSet<PatternInstance> onThisTree = null;
-			for (TreeSet<PatternInstance> it : tree)
+			for (TreeSet<PatternInstance> it : returnSet)
 			{
 				if (it.contains(p))
 				{
@@ -189,19 +190,19 @@ public class Engine
 			else
 			{
 				workingTree.addAll(onThisTree);
-				tree.remove(onThisTree);
+				returnSet.remove(onThisTree);
 			}
 		}
-		tree.add(workingTree);
-		return tree;
+		returnSet.add(workingTree);
+		return returnSet;
 	}
 
-	static TreeSet<TreeSet<PatternInstance>> addPair(TreeSet<TreeSet<PatternInstance>> tree, PatternInstance p1,
+	static Set<TreeSet<PatternInstance>> addPair(Set<TreeSet<PatternInstance>> returnSet, PatternInstance p1,
 			PatternInstance p2)
 	{
 		TreeSet<PatternInstance> t1 = null;
 		TreeSet<PatternInstance> t2 = null;
-		for (TreeSet<PatternInstance> aTree : tree)
+		for (TreeSet<PatternInstance> aTree : returnSet)
 		{
 			if (aTree.contains(p1))
 			{
@@ -209,7 +210,7 @@ public class Engine
 				break;
 			}
 		}
-		for (TreeSet<PatternInstance> aTree : tree)
+		for (TreeSet<PatternInstance> aTree : returnSet)
 		{
 			if (aTree.contains(p2))
 			{
@@ -223,7 +224,7 @@ public class Engine
 			TreeSet<PatternInstance> newTree = new TreeSet<>(new InstanceComparator());
 			newTree.add(p1);
 			newTree.add(p2);
-			tree.add(newTree);
+			returnSet.add(newTree);
 		}
 		else if (t1 == null && t2 != null)
 		{
@@ -236,9 +237,9 @@ public class Engine
 		else if (t1 != t2)
 		{
 			t1.addAll(t2);
-			tree.remove(t2);
+			returnSet.remove(t2);
 		}
-		return tree;
+		return returnSet;
 	}
 
 	static class TreeComparator implements Comparator<TreeSet<PatternInstance>>, Serializable
@@ -319,12 +320,9 @@ public class Engine
 		}
 	}
 	
-	public static class IntArrayComparator implements Comparator<int[]>, Serializable
+	/*public static class IntArrayComparator implements Comparator<int[]>, Serializable
 	{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 2961394193017916069L;
 
 		@Override
@@ -350,9 +348,9 @@ public class Engine
 			return 0;
 		}
 		
-	}
+	}*/
 
-	static LinkedList<PatternInstance> massMerge(TreeSet<TreeSet<PatternInstance>> collisions,
+	static LinkedList<PatternInstance> massMerge(Set<TreeSet<PatternInstance>> collisions,
 			LinkedList<PatternInstance> instances, ReferenceMap<PatternWrapper, PatternEntry> knownPatterns,
 			Ruleset rule)
 	{

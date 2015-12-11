@@ -1,5 +1,7 @@
 package objects;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.collections4.map.ReferenceMap;
@@ -115,7 +117,7 @@ public class PatternInstance
 		int dx = x - other.getX(); 
 		int dy = y - other.getY();
 		
-		TreeSet<int[]> coordinates = new TreeSet<int[]>(new Engine.IntArrayComparator());
+		Set<int[]> coordinates = new HashSet<int[]>();
 		
 		//Come up with all possible collision points
 		for (int x = 0; x < Math.round(getRectangle().getWidth())-2; x++)
