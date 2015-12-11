@@ -50,7 +50,7 @@ public class MyGdxGame implements ApplicationListener
 	SpriteBatch batch;
 	boolean willStep = false;
 	boolean oneStep = false;
-	Viewport viewport;
+	ScreenViewport viewport;
 
 	byte[][] GOSPER_GLIDER_CELLS = { {1, 0, 1}, {0, 1, 1}, {0, 1, 0}};
 	byte[][] R_PENTOMINO = { {0, 1, 1}, {1, 1, 0}, {0, 1, 0}};
@@ -166,7 +166,6 @@ public class MyGdxGame implements ApplicationListener
 	public void resize(int width, int height)
 	{
 		viewport.update(width, height, true);
-		viewport.apply(true);
 	}
 
 	@Override
