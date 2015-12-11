@@ -1,5 +1,6 @@
 package base;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.TreeSet;
@@ -88,6 +89,7 @@ public class MyGdxGame implements ApplicationListener
 	@Override
 	public void render()
 	{
+		ArrayList<Texture> textures = new ArrayList<>();
 		Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT); // clears the buffer
 		batch.begin();
 		LinkedList<PatternInstance> newList = new LinkedList<>();
@@ -150,6 +152,8 @@ public class MyGdxGame implements ApplicationListener
 						- currentPatternInstance.getRectangle().getHeight()+1);
 			}
 			
+			textures.add(tx);
+			
 		}
 		
 		batch.end();
@@ -159,6 +163,12 @@ public class MyGdxGame implements ApplicationListener
 		currentPatterns = Engine.cleanList(Engine.massMerge(collisionSet, newList, knownPatterns, actingRule));
 		
 		oneStep = false;
+		
+		for (Texture t : textures)
+		{
+			if (t != null)
+				t.dispose();
+		}
 
 	}
 
